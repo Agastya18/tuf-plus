@@ -1,4 +1,4 @@
-import { BrowserRouter } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -7,17 +7,37 @@ import Testimonial from './components/Testimonial';
 import CallToAction from './components/CallToAction';
 import Footer from './components/Footer';
    import Banner from './components/Banner.jsx';
+   import Dashboard from './components/Dashboard.jsx';
 function App() {
   return (
-    <BrowserRouter>
-    <Banner/>
+   
+    <>
+      {/* <Banner/>
       <Navbar />
       <Hero />
       <Features />
       <Testimonial />
       <CallToAction />
-      <Footer />
-    </BrowserRouter>
+      <Footer /> */}
+      <Routes>
+      <Route 
+          path="/" 
+          element={
+            <>
+              <Banner />
+              <Navbar />
+              <Hero />
+              <Features />
+              <Testimonial />
+              <CallToAction />
+              <Footer />
+            </>
+          } 
+        />
+				<Route path='/dash' element={<Dashboard />} />
+			</Routes>
+    </>
+   
   );
 }
 
