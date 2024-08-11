@@ -1,8 +1,28 @@
 import { XMarkIcon } from '@heroicons/react/20/solid'
-
-import React from 'react'
+import axios from 'axios'
+import {Link} from 'react-router-dom'
+import { useState,useEffect } from 'react'
 
 const Banner = () => {
+  //set data
+  const [d,setD] = useState('')
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/api/get');
+        console.log(response.data);
+        setD(response.data)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData()
+
+
+  },[])
+
   return (
     <div className="relative isolate flex items-center gap-x-6 overflow-hidden bg-gray-100 px-6 py-2.5 sm:px-3.5 sm:before:flex-1">
       <div
@@ -31,18 +51,21 @@ const Banner = () => {
       </div>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <p className="text-sm leading-6 text-gray-900">
-          <strong className="font-semibold">GeneriCon 2023</strong>
+          <strong className="font-semibold">ManageCo 2024</strong>
           <svg viewBox="0 0 2 2" aria-hidden="true" className="mx-2 inline h-0.5 w-0.5 fill-current">
             <circle r={1} cx={1} cy={1} />
           </svg>
-          Join us in Denver from June 7 – 9 to see what’s coming next.
+          {
+            d.description
+
+          }
         </p>
-        <a
-          href="#"
-          className="flex-none rounded-full bg-gray-900 px-3.5 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+        <Link
+          to={d.link}
+          className="flex-none rounded-full underline bg-gray-900 px-3.5 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
         >
-          Register now <span aria-hidden="true">&rarr;</span>
-        </a>
+          Go to Link now <span aria-hidden="true">&rarr;</span>
+        </Link>
       </div>
       <div className="flex flex-1 justify-end">
         <button type="button" className="-m-3 p-3 focus-visible:outline-offset-[-4px]">
