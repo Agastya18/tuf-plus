@@ -43,13 +43,15 @@ const Security = () => {
 	}
 	const handleToggle = async() => {
 		 let newtwoFactor = !twoFactor;
+		 const f=-1;
         setTwoFactor(newtwoFactor);
 		console.log("two factor",newtwoFactor)
 
 		try {
 
 			const response = await axios.post('/api/toggle', {
-				isVisible: newtwoFactor
+				isVisible: newtwoFactor,
+				timer: f
 			});
 		//	console.log(response);
 			

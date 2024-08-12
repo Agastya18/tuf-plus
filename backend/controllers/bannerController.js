@@ -59,7 +59,7 @@ export const getBanner = async(req,res) =>{
 
 export const createToggleBanner = async(req,res) =>{
 
-    const {isVisible} = req.body;
+    const {isVisible,timer} = req.body;
     //console.log(isVisible)
 
     try {
@@ -72,14 +72,16 @@ export const createToggleBanner = async(req,res) =>{
                     id:existingBanner.id
                 },
                 data:{
-                    isVisible
+                    isVisible,
+                    timer: parseInt(timer)
                 }
             });
 
         }else{
              banner = await prisma.banner.create({
                 data:{
-                    isVisible
+                    isVisible,
+                    timer: parseInt(timer)
                     
                 }
             });

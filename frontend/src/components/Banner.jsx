@@ -2,11 +2,15 @@ import { XMarkIcon } from '@heroicons/react/20/solid'
 import axios from 'axios'
 import {Link} from 'react-router-dom'
 import { useState,useEffect } from 'react'
-
+import useBannerStore from '../zustand/store';
 const Banner = () => {
   //set data
+//const { load,setLoad } = useBannerStore();
   const [d,setD] = useState(null)
+ const [load,setLoad] = useState(true)
+
   const [timeLeft, setTimeLeft] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,7 +18,11 @@ const Banner = () => {
         const response = await axios.get('/api/get');
         console.log(response.data);
         setD(response.data)
-        setTimeLeft(response.data.timer)
+        if(response.data && load){
+          setTimeLeft(response.data.timer)
+        setIsVisible(response.data.isVisible)
+        setLoad(false)
+        }
       } catch (error) {
         console.log(error);
       }
@@ -22,16 +30,41 @@ const Banner = () => {
     fetchData()
 
 
-  },[])
+  },[setTimeLeft, setIsVisible,load,setLoad])
+
   useEffect(() => {
-    if (timeLeft > 0) {
+    if (timeLeft > 0 && isVisible) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
-    } else if (d) {
-      setD({ ...d, isVisible: false });
+    }else if (timeLeft == 0 && isVisible) {
+      const updateVisibility = async () => {
+        try {
+            await axios.post('/api/toggle', {
+                isVisible: false,
+            });
+            setIsVisible(false);
+        } catch (error) {
+            console.error('Failed to update banner visibility:', error);
+        }
+    };
+
+    updateVisibility();
     }
-  }, [timeLeft]);
-  if (!d || !d.isVisible) return null;
+  }, [timeLeft,setIsVisible,setTimeLeft,isVisible]);
+
+//   useEffect(() => {
+//     if (timeLeft > 0 && isVisible) {
+//         const timerInterval = setInterval(() => {
+//             setTimeLeft(timeLeft - 1);
+
+//             // Optionally, you can sync the timeLeft with the backend periodically
+//         }, 1000);
+
+//         return () => clearInterval(timerInterval);
+//     }
+// }, [timeLeft, isVisible, setTimeLeft]);
+
+  if (!d || !d.isVisible || !isVisible) return null;
 
   return (
     <div className="relative isolate flex items-center gap-x-6 overflow-hidden bg-gray-100 px-6 py-2.5 sm:px-3.5 sm:before:flex-1">
@@ -77,12 +110,16 @@ const Banner = () => {
           Go to Link now <span aria-hidden="true">&rarr;</span>
         </Link>
       </div>
-      <div className="flex flex-1 justify-end text-red-700">
-        {
-          timeLeft>0 && `time left: ${timeLeft}s`
-        }
-        
-      </div>
+       {isVisible && (
+                <div className="flex flex-1 justify-end text-red-700">
+                    {timeLeft > 0 && (
+                        <>
+                            time left: <span className="text-orange-500">{timeLeft}s</span>
+                        </>
+                    )}
+                </div>
+            )}
+
     </div>
   )
 }
