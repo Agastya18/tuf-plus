@@ -1,7 +1,7 @@
 import { prisma } from "../db/prisma.js";
 export const createBanner = async(req,res) =>{
 
-    const {bannerData,link} = req.body;
+    const {bannerData,link,isVisible,timer} = req.body;
 
     try {
         
@@ -14,7 +14,10 @@ export const createBanner = async(req,res) =>{
                 },
                 data:{
                     description: bannerData || existingBanner.description,
-                    link : link || existingBanner.link
+                    link : link || existingBanner.link,
+                    isVisible: isVisible || existingBanner.isVisible,
+                    timer: parseInt(timer )
+
                 }
             });
 
@@ -22,7 +25,10 @@ export const createBanner = async(req,res) =>{
              banner = await prisma.banner.create({
                 data:{
                     description: bannerData,
-                    link
+                    link,
+                    isVisible,
+                    timer: parseInt(timer)
+                    
                 }
             });
 
@@ -46,6 +52,48 @@ export const getBanner = async(req,res) =>{
         const banner = await prisma.banner.findFirst();
         res.json(banner);
     } catch (error) {
+        console.log(error);
+    }
+}
+
+
+export const createToggleBanner = async(req,res) =>{
+
+    const {isVisible} = req.body;
+    //console.log(isVisible)
+
+    try {
+        
+        const existingBanner = await prisma.banner.findFirst();
+        let banner
+        if(existingBanner){
+            banner = await prisma.banner.update({
+                where:{
+                    id:existingBanner.id
+                },
+                data:{
+                    isVisible
+                }
+            });
+
+        }else{
+             banner = await prisma.banner.create({
+                data:{
+                    isVisible
+                    
+                }
+            });
+
+        }
+
+        
+
+        res.json(banner);
+
+    
+        
+    } catch (error) {
+        
         console.log(error);
     }
 }

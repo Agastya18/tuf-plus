@@ -5,8 +5,8 @@ import { useState,useEffect } from 'react'
 
 const Banner = () => {
   //set data
-  const [d,setD] = useState('')
-
+  const [d,setD] = useState(null)
+  const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,6 +14,7 @@ const Banner = () => {
         const response = await axios.get('/api/get');
         console.log(response.data);
         setD(response.data)
+        setTimeLeft(response.data.timer)
       } catch (error) {
         console.log(error);
       }
@@ -22,6 +23,15 @@ const Banner = () => {
 
 
   },[])
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (d) {
+      setD({ ...d, isVisible: false });
+    }
+  }, [timeLeft]);
+  if (!d || !d.isVisible) return null;
 
   return (
     <div className="relative isolate flex items-center gap-x-6 overflow-hidden bg-gray-100 px-6 py-2.5 sm:px-3.5 sm:before:flex-1">
@@ -67,11 +77,11 @@ const Banner = () => {
           Go to Link now <span aria-hidden="true">&rarr;</span>
         </Link>
       </div>
-      <div className="flex flex-1 justify-end">
-        <button type="button" className="-m-3 p-3 focus-visible:outline-offset-[-4px]">
-          <span className="sr-only">Dismiss</span>
-          <XMarkIcon aria-hidden="true" className="h-5 w-5 text-gray-900" />
-        </button>
+      <div className="flex flex-1 justify-end text-red-700">
+        {
+          timeLeft>0 && `time left: ${timeLeft}s`
+        }
+        
       </div>
     </div>
   )

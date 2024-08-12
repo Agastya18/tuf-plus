@@ -20,8 +20,9 @@ model Banner {
   
   description     String   @db.VarChar(255)
   link     String   @db.VarChar(255)
-  timer   String?
-  // published Boolean  @default(false)
+  timer   Int?
+  isVisible Boolean  @default(false)
+ 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
