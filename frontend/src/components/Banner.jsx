@@ -5,11 +5,12 @@ import { useState,useEffect } from 'react'
 import useBannerStore from '../zustand/store';
 const Banner = () => {
   //set data
-//const { load,setLoad } = useBannerStore();
+//const {setTimeLeft,timeLeft  } = useBannerStore();
   const [d,setD] = useState(null)
- const [load,setLoad] = useState(true)
+ 
 
   const [timeLeft, setTimeLeft] = useState(0);
+
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -17,11 +18,12 @@ const Banner = () => {
       try {
         const response = await axios.get('/api/get');
         console.log(response.data);
-        setD(response.data)
-        if(response.data && load){
+       
+        if(response.data){
+          setD(response.data)
           setTimeLeft(response.data.timer)
         setIsVisible(response.data.isVisible)
-        setLoad(false)
+        
         }
       } catch (error) {
         console.log(error);
@@ -30,7 +32,7 @@ const Banner = () => {
     fetchData()
 
 
-  },[setTimeLeft, setIsVisible,load,setLoad])
+  },[setTimeLeft, setIsVisible])
 
   useEffect(() => {
     if (timeLeft > 0 && isVisible) {
@@ -49,6 +51,8 @@ const Banner = () => {
     };
 
     updateVisibility();
+    }else if(timeLeft==-1){
+      setIsVisible(true);
     }
   }, [timeLeft,setIsVisible,setTimeLeft,isVisible]);
 
@@ -93,15 +97,17 @@ const Banner = () => {
         />
       </div>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <p className="text-sm leading-6 text-gray-900">
+        <p className="text-sm leading-6 text-gray-900 ">
           <strong className="font-semibold">ManageCo 2024</strong>
           <svg viewBox="0 0 2 2" aria-hidden="true" className="mx-2 inline h-0.5 w-0.5 fill-current">
             <circle r={1} cx={1} cy={1} />
           </svg>
-          {
-            d.description
+          
+            <span className=' text-yellow-700'>
+              {d.description}
+            </span>
 
-          }
+          
         </p>
         <Link
           to={d.link}
@@ -114,7 +120,7 @@ const Banner = () => {
                 <div className="flex flex-1 justify-end text-red-700">
                     {timeLeft > 0 && (
                         <>
-                            time left: <span className="text-orange-500">{timeLeft}s</span>
+                            time left: <span className=" bg-orange-400 text-white rounded-md px-1">{timeLeft}s</span>
                         </>
                     )}
                 </div>

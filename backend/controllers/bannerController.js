@@ -16,7 +16,7 @@ export const createBanner = async(req,res) =>{
                     description: bannerData || existingBanner.description,
                     link : link || existingBanner.link,
                     isVisible: isVisible || existingBanner.isVisible,
-                    timer: parseInt(timer )
+                    timer: parseInt(timer ) || existingBanner.timer
 
                 }
             });
@@ -27,7 +27,7 @@ export const createBanner = async(req,res) =>{
                     description: bannerData,
                     link,
                     isVisible,
-                    timer: parseInt(timer)
+                    timer: parseInt(timer) || existingBanner.timer
                     
                 }
             });
@@ -73,7 +73,8 @@ export const createToggleBanner = async(req,res) =>{
                 },
                 data:{
                     isVisible,
-                    timer: parseInt(timer)
+                    timer: parseInt(timer) || -1
+                   
                 }
             });
 
@@ -81,7 +82,8 @@ export const createToggleBanner = async(req,res) =>{
              banner = await prisma.banner.create({
                 data:{
                     isVisible,
-                    timer: parseInt(timer)
+                    timer: parseInt(timer) || -1
+                
                     
                 }
             });

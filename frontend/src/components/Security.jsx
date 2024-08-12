@@ -36,6 +36,9 @@ const Security = () => {
 				timer: time
 			});
 			console.log(response.data);
+			setDescription('');
+			setUrl('');
+			setTime(0);
 		} catch (error) {
 			console.log(error);
 			
@@ -43,15 +46,15 @@ const Security = () => {
 	}
 	const handleToggle = async() => {
 		 let newtwoFactor = !twoFactor;
-		 const f=-1;
+		
         setTwoFactor(newtwoFactor);
 		console.log("two factor",newtwoFactor)
 
 		try {
 
-			const response = await axios.post('/api/toggle', {
+			 await axios.post('/api/toggle', {
 				isVisible: newtwoFactor,
-				timer: f
+				
 			});
 		//	console.log(response);
 			
@@ -75,6 +78,7 @@ const Security = () => {
 			<div className='mt-4 flex  justify-between'>
             <input
          value={description}
+		 
 		 onChange={(e) => setDescription(e.target.value)}
 
   type="text"
@@ -113,6 +117,7 @@ const Security = () => {
 					 		 onChange={(e) => setTime(e.target.value)}
   type="number"
   placeholder="Add Timer"
+  defaultValue={-1}
   className="input input-bordered input-primary rounded-md w-full max-w-xs" />
 				<button
 				onClick={submitHandler}
